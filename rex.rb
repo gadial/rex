@@ -63,9 +63,14 @@ module Rex
 		end
 		def run
 			parse(gets)
+			while not @q.empty?
+				puts next_token.inspect
+			end
 		end
 	end
 end
+
+Rex::Lexer.new.run if $0 == __FILE__
 END_PARSER_CODE
 
 File.open(ARGV[0].sub(".rex",".rb"),"w"){|file| file.write(parser_code)}
