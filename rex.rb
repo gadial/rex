@@ -50,21 +50,28 @@ module Rex
 				case str
 #{regexp_commands}					else
 						c = str[0,1]
-						error(c)
+						@q.push([c,:rex_error_symbol])
 						str = str[1..-1]
 				end
 			end
 		end
 		def next_token
-			 @q.shift
+			result=@q.shift
+			return result if result==nil
+			if result[1]==:rex_error_symbol
+				error(result[0])
+				return nil
+			end
+			return result
 		end
 		def error(c)
-			print(c)
+			puts(c)
 		end
 		def run
 			parse(gets)
 			while not @q.empty?
-				puts next_token.inspect
+				token=next_token
+				puts token.inspect unless token == nil
 			end
 		end
 	end
