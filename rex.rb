@@ -33,9 +33,15 @@ text.each_line do |line|
 end
 
 regexp_commands=""
+regexp_identifiers=""
 tabs="\t\t\t\t\t"
-regexp_list.each do |regexp|
-	regexp_commands+="#{tabs}when #{regexp[0].inspect}\n"
+regexp_list.each_index do |index|
+	regexp=regexp_list[index]
+
+	regexp_identifiers+="\t\t\t\tregexp_candidates<<[#{index},$&.length] if str =~ #{regexp[0].inspect}\n"
+
+	regexp_commands+="#{tabs}when #{index}\n"
+	regexp_commands+="#{tabs}\tstr =~ #{regexp[0].inspect}\n"
 	regexp_commands+="#{tabs}\t@q.push [#{regexp[1].to_sym.inspect},$&]\n" if regexp[1]!=""
 	regexp_commands+="#{tabs}\tstr = $'\n"
 end
@@ -47,11 +53,17 @@ module Rex
 			str = str.strip
 			@q = []
 			until str.empty?
-				case str
-#{regexp_commands}					else
-						c = str[0,1]
-						@q.push([c,:rex_error_symbol])
-						str = str[1..-1]
+				regexp_candidates=[]
+#{regexp_identifiers}
+				regexp_candidates.sort{|a,b| a[1]<=>b[1] or (a[1]==b[1] and a[0]<=>b[0])}
+				unless regexp_candidates.empty?
+					case regexp_candidates.last[0]
+#{regexp_commands}
+					end
+				else
+					c = str[0,1]
+					@q.push([c,:rex_error_symbol])
+					str = str[1..-1]
 				end
 			end
 		end
