@@ -8,7 +8,7 @@ end
 def add_regexp(line, regexp_list, macro_list)
  	macro_list.each{|macro|	line=line.gsub(macro[0], macro[1])}
 	if line =~ /\s*:\s*/
-		new_regexp=$`
+		new_regexp="\\A"+$`
 		new_token=$'.strip
 		regexp_list << [Regexp.new(new_regexp),new_token]
 	end
@@ -35,8 +35,9 @@ end
 regexp_commands=""
 tabs="\t\t\t\t\t"
 regexp_list.each do |regexp|
-	regexp_commands+="#{tabs}when #{regexp[0].inspect}" 
-	regexp_commands+="\n#{tabs}\t@q.push [#{regexp[1].to_sym.inspect},$&]\n#{tabs}\tstr = $'\n" if regexp[1]!=""
+	regexp_commands+="#{tabs}when #{regexp[0].inspect}\n"
+	regexp_commands+="#{tabs}\t@q.push [#{regexp[1].to_sym.inspect},$&]\n" if regexp[1]!=""
+	regexp_commands+="#{tabs}\tstr = $'\n"
 end
 
 parser_code = <<END_PARSER_CODE
@@ -47,8 +48,7 @@ module Rex
 			@q = []
 			until str.empty?
 				case str
-#{regexp_commands}
-					else
+#{regexp_commands}					else
 						c = str[0,1]
 						error(c)
 						str = str[1..-1]
