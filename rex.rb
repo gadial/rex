@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'pathname'
 
 def add_macro(line, macro_list)
@@ -49,6 +51,8 @@ regexp_list.each_index do |index|
 end
 
 parser_code = <<END_PARSER_CODE
+#!/usr/bin/env ruby
+
 module Rex
 	class Lexer
 		def parse(str)
