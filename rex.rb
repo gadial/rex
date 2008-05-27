@@ -92,10 +92,12 @@ module Rex
 			puts(c)
 		end
 		def run
-			parse(gets)
-			while not @q.empty?
-				token=next_token
-				puts token.inspect unless token == nil
+			until (input_str = gets).nil?
+				parse(input_str)
+				while not @q.empty?
+					token=next_token
+					puts token.inspect unless token == nil
+				end
 			end
 		end
 	end
