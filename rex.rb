@@ -1,3 +1,5 @@
+require 'pathname'
+
 def add_macro(line, macro_list)
 	if line =~ /\A\w+/
 		new_macro_name="{#{$&}}"
@@ -98,4 +100,8 @@ end
 Rex::Lexer.new.run if $0 == __FILE__
 END_PARSER_CODE
 
-File.open(ARGV[0].sub(".rex",".rb"),"w"){|file| file.write(parser_code)}
+input_file = Pathname.new(ARGV[0])
+output_filename = \
+  (input_file.dirname + input_file.basename(".rex")).to_s + ".rb"
+
+File.open(output_filename, "w") { |file| file.write(parser_code) }
