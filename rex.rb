@@ -55,7 +55,13 @@ module Rex
 			until str.empty?
 				regexp_candidates=[]
 #{regexp_identifiers}
-				regexp_candidates.sort{|a,b| a[1]<=>b[1] or (a[1]==b[1] and a[0]<=>b[0])}
+				regexp_candidates.sort! do |a,b|
+					if a[1]==b[1]
+						a[0]<=>b[0]
+					else
+						a[1]<=>b[1]
+					end
+				end
 				unless regexp_candidates.empty?
 					case regexp_candidates.last[0]
 #{regexp_commands}

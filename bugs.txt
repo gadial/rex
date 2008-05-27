@@ -1,1 +1,0 @@
-1) The matching algorithm is not greedy; first rule is always matched. Seems like Ruby's case statement isn't that smart.
