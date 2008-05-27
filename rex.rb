@@ -2,6 +2,20 @@
 
 require 'pathname'
 
+def split_regexp_line(line)
+	#we assume whitespace outside bracket is the seperator between the regexp and the action
+	bracket_count=0
+	line.length.times do |i|
+		raise "wrong regular expression on line #{line}" if bracket_count<0
+		case line[i,1]
+			when /\[/: bracket_count+=1
+			when /\]/: bracket_count-=1
+			when /\s/: return i if bracket_count==0
+		end
+	end
+	return line.length #maybe there's no action, so treat the whole line as regexp
+end
+
 def add_macro(line, macro_list)
 	if line =~ /\A\w+/
 		new_macro_name="{#{$&}}"
@@ -9,13 +23,14 @@ def add_macro(line, macro_list)
 		macro_list << [new_macro_name,new_macro_text]
 	end
 end
+
 def add_regexp(line, regexp_list, macro_list)
  	macro_list.each{|macro|	line=line.gsub(macro[0], macro[1])}
-	if line =~ /\s*:\s*/
-		new_regexp="\\A"+$`
-		new_token=$'.strip
-		regexp_list << [Regexp.new(new_regexp),new_token]
-	end
+	return if line =~ /^\s*$/ #empty line
+	split_location=split_regexp_line(line)
+	new_regexp="\\A"+line[0..split_location].strip.rstrip
+	new_token=line[(split_location+1)..-1].strip.rstrip
+	regexp_list << [Regexp.new(new_regexp),new_token]
 end
 
 if ARGV.size!=1
