@@ -45,6 +45,7 @@ macro_list=[]
 regexp_list=[]
 text.each_line do |line|
 	phase += 1 if /\A%%.*/ === line
+	next if /\A#/ === line
 	case phase
 		when 0: add_macro(line, macro_list)
 		when 1: add_regexp(line, regexp_list, macro_list)
