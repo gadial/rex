@@ -110,6 +110,9 @@ module Rex
 		def error(c)
 			puts(c)
 		end
+		def empty?
+			return @q.empty?
+		end
 		def run
 			until (input_str = gets).nil?
 				parse(input_str)
