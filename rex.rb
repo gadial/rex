@@ -28,7 +28,11 @@ def add_macro(line, macro_list)
 end
 
 def add_regexp(line, regexp_list, macro_list)
- 	macro_list.each{|macro|	line=line.gsub(macro[0], macro[1])}
+	macro_list.each{|macro|
+		while line.include?(macro[0])
+			line[macro[0]] = macro[1]
+		end
+	}
 	return if line =~ /^\s*$/ #empty line
 	split_location=split_regexp_line(line)
 	new_regexp="\\A"+line[0..split_location].strip.rstrip
