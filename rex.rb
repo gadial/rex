@@ -5,12 +5,15 @@ require 'pathname'
 def split_regexp_line(line)
 	#we assume whitespace outside bracket is the seperator between the regexp and the action
 	bracket_count=0
+	parenthesis_count=0
 	line.length.times do |i|
 		raise "wrong regular expression on line #{line}" if bracket_count<0
 		case line[i,1]
 			when /\[/: bracket_count+=1
 			when /\]/: bracket_count-=1
-			when /\s/: return i if bracket_count==0
+			when /\(/: parenthesis_count+=1
+			when /\)/: parenthesis_count-=1
+			when /\s/: return i if (bracket_count==0 and parenthesis_count==0)
 		end
 	end
 	return line.length #maybe there's no action, so treat the whole line as regexp
