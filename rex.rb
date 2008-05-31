@@ -36,7 +36,7 @@ def add_regexp(line, regexp_list, macro_list)
 	return if line =~ /^\s*$/ #empty line
 	split_location=split_regexp_line(line)
 	new_regexp="\\A"+line[0..split_location].strip.rstrip
-	new_token=line[(split_location+1)..-1].strip.rstrip
+	new_token=(line[(split_location+1)..-1]!= nil) ? (line[(split_location+1)..-1].strip.rstrip) : ""
 	regexp_list << [Regexp.new(new_regexp),new_token]
 end
 
