@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+	#!/usr/bin/env ruby
 
 require 'pathname'
 
@@ -86,7 +86,7 @@ module Rex
 #{regexp_identifiers}
 				regexp_candidates.sort! do |a,b|
 					if a[1]==b[1]
-						a[0]<=>b[0]
+						b[0]<=>a[0]
 					else
 						a[1]<=>b[1]
 					end
